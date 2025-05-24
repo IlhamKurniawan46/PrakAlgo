@@ -286,7 +286,110 @@ void sortingLagu(const char* namaPlaylist, bool ascending) {
     cout << "Lagu berhasil disorting.\n";
 }
 
+// Menyimpan ke file
+void simpanFile() {
+    FILE* fp = fopen("playlist.dat", "wb");
+    Playlist* pl = headPlaylist;
+
+    while (pl) {
+        fwrite(pl->nama, sizeof(pl->nama), 1, fp);
+
+        Node* lagu = pl->head;
+        while (lagu) {
+            fwrite(&lagu->data, sizeof(Lagu), 1, fp);
+            lagu = lagu->next;
+        }
+
+        // penanda akhir playlist
+        Lagu penanda = { "#", "#", "#", false };
+        fwrite(&penanda, sizeof(Lagu), 1, fp);
+        pl = pl->next;
+    }
+
+    fclose(fp);
+}
+
+// Load dari file.dat
+void loadFile() {
+    FILE* fp = fopen("playlist.dat", "rb");
+    if (!fp) return;
+
+    while (!feof(fp)) {
+        Playlist* baru = new Playlist;
+        if (fread(baru->nama, sizeof(baru->nama), 1, fp) != 1) {
+            delete baru;
+            break;
+        }
+
+        baru->head = baru->tail = nullptr;
+        baru->next = nullptr;
+
+        Lagu temp;
+        while (fread(&temp, sizeof(Lagu), 1, fp) == 1) {
+            if (strcmp(temp.judul, "#") == 0) break;
+
+            Node* lagu = new Node{ temp, nullptr, nullptr };
+            if (!baru->head) baru->head = baru->tail = lagu;
+            else {
+                baru->tail->next = lagu;
+                lagu->prev = baru->tail;
+                baru->tail = lagu;
+            }
+        }
+
+        if (!headPlaylist) headPlaylist = baru;
+        else {
+            Playlist* tmp = headPlaylist;
+            while (tmp->next) tmp = tmp->next;
+            tmp->next = baru;
+        }
+    }
+
+    fclose(fp);
+}
+
+void menu() {
+    int pil;
+    char nama[50];
+    loadFile();
+
+    do {
+        cout << "\n===== MENU =====\n";
+        cout << "1. Buat Playlist\n";
+        cout << "2. Tambah Lagu\n";
+        cout << "3. Cari Lagu\n";
+        cout << "4. Tampil Semua Lagu\n";
+        cout << "5. Lagu Favorit\n";
+        cout << "6. Edit Lagu\n";
+        cout << "7. Hapus Lagu\n";
+        cout << "8. Kosongkan Playlist\n";
+        cout << "9. Sorting Lagu\n";
+        cout << "10. Keluar\n";
+        cout << "Pilihan: ";
+        cin >> pil;
+        cin.ignore();
+
+        switch (pil) {
+            case 1: buatPlaylist(); break;
+            case 2: cout << "Nama Playlist: "; cin.getline(nama, 50); tambahLagu(nama); break;
+            case 3: cout << "Nama Playlist: "; cin.getline(nama, 50); cariLagu(nama); break;
+            case 4: tampilkanLaguPilihan(); break;
+            case 5: laguFavorit(); break;
+            case 6: cout << "Nama Playlist: "; cin.getline(nama, 50); editLagu(nama); break;
+            case 7: cout << "Nama Playlist: "; cin.getline(nama, 50); hapusLagu(nama); break;
+            case 8: cout << "Nama Playlist: "; cin.getline(nama, 50); kosongkanPlaylist(nama); break;
+            case 9: cout << "Nama Playlist: "; cin.getline(nama, 50);
+                    char urut; cout << "Urutan (a/d): "; cin >> urut; cin.ignore();
+                    sortingLagu(nama, urut == 'a'); break;
+            case 10: simpanFile(); cout << "Keluar dan simpan data.\n"; break;
+            default: cout << "Pilihan tidak valid!\n";
+        }
+
+    } while (pil != 10);
+}
+
+
 int main(){
-    //testcommit
-    // nando commit
+    menu();
+    return 0;
 }
