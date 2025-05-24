@@ -24,7 +24,7 @@ struct Playlist {
 
 Playlist* headPlaylist = nullptr;
 
-// === Cari Playlist ===
+// Fungsi cek cari playlist
 Playlist* cariPlaylist(const char* nama) {
     Playlist* temp = headPlaylist;
     while (temp) {
@@ -35,7 +35,7 @@ Playlist* cariPlaylist(const char* nama) {
     return nullptr;
 }
 
-// === Cari Lagu ===
+// Fungsi buat cek cari lagu
 Node* cariLaguNode(Playlist* pl, const char* judul) {
     Node* temp = pl->head;
     while (temp) {
@@ -97,7 +97,7 @@ void tambahLagu(const char* namaPlaylist) {
     }
 }
 
-// === 3. Cari Lagu ===
+// Menu 3 cari Lagu
 void cariLagu(const char* namaPlaylist) {
     Playlist* pl = cariPlaylist(namaPlaylist);
     if (!pl) {
@@ -118,6 +118,40 @@ void cariLagu(const char* namaPlaylist) {
         cout << "Favorit: " << (found->data.favorit ? "Ya" : "Tidak") << "\n";
     } else {
         cout << "Lagu tidak ditemukan.\n";
+    }
+}
+
+// Menu 4 Tampil semua lagu
+void tampilkanSemuaLagu() {
+    Playlist* pl = headPlaylist;
+    while (pl) {
+        cout << "\nPlaylist: " << pl->nama << endl;
+        Node* lagu = pl->head;
+        int i = 1;
+        while (lagu) {
+            cout << "  Lagu ke-" << i++ << " : " << lagu->data.judul << " - " << lagu->data.penyanyi << " (" << lagu->data.genre << ")";
+            cout << (lagu->data.favorit ? " (❤︎)" : "") << endl;
+            lagu = lagu->next;
+        }
+        pl = pl->next;
+    }
+}
+
+// Menu 4 Tampil lagu dari playlist
+void tampilkanLagu(const char* namaPlaylist) {
+    Playlist* pl = cariPlaylist(namaPlaylist);
+    if (!pl) {
+        cout << "Playlist tidak ditemukan!\n";
+        return;
+    }
+
+    Node* lagu = pl->head;
+    int i = 1;
+    cout << "\nPlaylist: " << pl->nama << "\n";
+    while (lagu) {
+        cout << "  Lagu ke-" << i++ << " : " << lagu->data.judul << " - " << lagu->data.penyanyi<< " (" << lagu->data.genre << ")";
+        cout << (lagu->data.favorit ? " (❤︎)" : "") << "\n";
+        lagu = lagu->next;
     }
 }
 
