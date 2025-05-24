@@ -217,6 +217,74 @@ void editLagu(const char* namaPlaylist) {
     cout << "Lagu berhasil diedit!\n";
 }
 
+// Menu 7 hapus lagu
+void hapusLagu(const char* namaPlaylist) {
+    Playlist* pl = cariPlaylist(namaPlaylist);
+    if (!pl) return;
+
+    char judul[50];
+    cout << "Judul lagu yang ingin dihapus: ";
+    cin.getline(judul, 50);
+    Node* del = cariLaguNode(pl, judul);
+    if (!del) return;
+
+    if (del == pl->head && del == pl->tail)
+        pl->head = pl->tail = nullptr;
+    else if (del == pl->head) {
+        pl->head = del->next;
+        pl->head->prev = nullptr;
+    } else if (del == pl->tail) {
+        pl->tail = del->prev;
+        pl->tail->next = nullptr;
+    } else {
+        del->prev->next = del->next;
+        del->next->prev = del->prev;
+    }
+
+    delete del;
+    cout << "Lagu dihapus!\n";
+}
+
+// Menu 8 Hapus isi lagu di playlist
+void kosongkanPlaylist(const char* namaPlaylist) {
+    Playlist* pl = cariPlaylist(namaPlaylist);
+    if (!pl) return;
+
+    Node* temp = pl->head;
+    while (temp) {
+        Node* next = temp->next;
+        delete temp;
+        temp = next;
+    }
+    pl->head = pl->tail = nullptr;
+    cout << "Playlist dikosongkan!\n";
+}
+
+// Menu 9 Sorting lagu pake bubble sort
+void sortingLagu(const char* namaPlaylist, bool ascending) {
+    Playlist* pl = cariPlaylist(namaPlaylist);
+    if (!pl) return;
+    if (!pl->head || !pl->head->next) return;
+
+    bool swapped;
+    do {
+        swapped = false;
+        Node* curr = pl->head;
+        while (curr->next) {
+            bool kondisi = ascending ?
+                strcmp(curr->data.judul, curr->next->data.judul) > 0 :
+                strcmp(curr->data.judul, curr->next->data.judul) < 0;
+
+            if (kondisi) {
+                swap(curr->data, curr->next->data);
+                swapped = true;
+            }
+            curr = curr->next;
+        }
+    } while (swapped);
+
+    cout << "Lagu berhasil disorting.\n";
+}
 
 int main(){
     //testcommit
