@@ -155,6 +155,69 @@ void tampilkanLagu(const char* namaPlaylist) {
     }
 }
 
+// Menu 4 Pilihan tampil lagu
+void tampilkanLaguPilihan() {
+    int pilihan;
+    cout << "1. Tampil semua lagu\n";
+    cout << "2. Tampil lagu dari playlist tertentu\n";
+    cout << "Pilihan: ";
+    cin >> pilihan; cin.ignore();
+
+    if (pilihan == 1) {
+        tampilkanSemuaLagu();
+    } else if (pilihan == 2) {
+        char nama[50];
+        cout << "Masukkan nama playlist: ";
+        cin.getline(nama, 50);
+        tampilkanLagu(nama); // fungsi ini sekarang sudah ada
+    } else {
+        cout << "Pilihan tidak valid!\n";
+    }
+}
+
+// Menu 5 Lagu Favorit
+void laguFavorit() {
+    Playlist* pl = headPlaylist;
+    while (pl) {
+        Node* temp = pl->head;
+        while (temp) {
+            if (temp->data.favorit) {
+                cout << "\n[Playlist: " << pl->nama << "]\n";
+                cout << "Judul: " << temp->data.judul << "\n";
+                cout << "Penyanyi: " << temp->data.penyanyi << "\n";
+                cout << "Genre: " << temp->data.genre << "\n";
+            }
+            temp = temp->next;
+        }
+        pl = pl->next;
+    }
+}
+
+// Menu 6 Edit Lagu
+void editLagu(const char* namaPlaylist) {
+    Playlist* pl = cariPlaylist(namaPlaylist);
+    if (!pl) return;
+
+    char judul[50];
+    cout << "Judul lagu yang ingin diedit: ";
+    cin.getline(judul, 50);
+
+    Node* node = cariLaguNode(pl, judul);
+    if (!node) {
+        cout << "Lagu tidak ditemukan!\n";
+        return;
+    }
+
+    cout << "Judul baru: "; cin.getline(node->data.judul, 50);
+    cout << "Penyanyi baru: "; cin.getline(node->data.penyanyi, 50);
+    cout << "Genre baru: "; cin.getline(node->data.genre, 50);
+    char fav;
+    cout << "Favorit (y/n)? "; cin >> fav; cin.ignore();
+    node->data.favorit = (fav == 'y' || fav == 'Y');
+    cout << "Lagu berhasil diedit!\n";
+}
+
+
 int main(){
     //testcommit
     // nando commit
