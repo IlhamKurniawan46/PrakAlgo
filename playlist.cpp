@@ -86,13 +86,15 @@ void tambahLagu(const char* namaPlaylist) {
         cout << "Favorit? (y/n) : "; cin >> fav; cin.ignore();
         baru->data.favorit = (fav == 'y' || fav == 'Y');
         baru->prev = baru->next = nullptr;
-
+        
         if (!pl->head)
-            pl->head = pl->tail = baru;
+        pl->head = pl->tail = baru;
         else {
             pl->tail->next = baru;
             baru->prev = pl->tail;
             pl->tail = baru;
+
+            cout << endl;
         }
     }
 }
@@ -130,7 +132,7 @@ void tampilkanSemuaLagu() {
         int i = 1;
         while (lagu) {
             cout << "  Lagu ke-" << i++ << " : " << lagu->data.judul << " - " << lagu->data.penyanyi << " (" << lagu->data.genre << ")";
-            cout << (lagu->data.favorit ? " (❤︎)" : "") << endl;
+            cout << (lagu->data.favorit ? " (Favorit)" : "") << endl;
             lagu = lagu->next;
         }
         pl = pl->next;
@@ -150,7 +152,7 @@ void tampilkanLagu(const char* namaPlaylist) {
     cout << "\nPlaylist: " << pl->nama << "\n";
     while (lagu) {
         cout << "  Lagu ke-" << i++ << " : " << lagu->data.judul << " - " << lagu->data.penyanyi<< " (" << lagu->data.genre << ")";
-        cout << (lagu->data.favorit ? " (❤︎)" : "") << "\n";
+        cout << (lagu->data.favorit ? " (Favorit)" : "") << "\n";
         lagu = lagu->next;
     }
 }
@@ -187,9 +189,9 @@ void laguFavorit() {
         while (temp) {
             if (temp->data.favorit) {
                 cout << "\n[Playlist    : " << pl->nama << "]\n";
-                cout << "Judul      : " << temp->data.judul << "\n";
-                cout << "Penyanyi   : " << temp->data.penyanyi << "\n";
-                cout << "Genre      : " << temp->data.genre << "\n";
+                cout << "   Judul      : " << temp->data.judul << "\n";
+                cout << "   Penyanyi   : " << temp->data.penyanyi << "\n";
+                cout << "   Genre      : " << temp->data.genre << "\n";
             }
             temp = temp->next;
         }
@@ -358,19 +360,20 @@ void menu() {
     loadFile();
 
     do {
+        system("cls");
         cout << "=====================================\n";
         cout << "||               MENU              ||\n";
         cout << "=====================================\n";
         cout << "|| 1. Buat Playlist                ||\n";
         cout << "|| 2. Tambah Lagu                  ||\n";
-        cout << "|| 3. Cari Lagu                    ||\n";
-        cout << "|| 4. Tampil Semua Lagu            ||\n";
-        cout << "|| 5. Lagu Favorit                 ||\n";
-        cout << "|| 6. Edit Lagu                    ||\n";
-        cout << "|| 7. Hapus Lagu                   ||\n";
-        cout << "|| 8. Kosongkan Playlist           ||\n";
-        cout << "|| 9. Sorting Lagu                 ||\n";
-        cout << "|| 10. Keluar                      ||\n";
+        cout << "|| 3. Tampil Semua Lagu            ||\n";
+        cout << "|| 4. Lagu Favorit                 ||\n";
+        cout << "|| 5. Cari Lagu                    ||\n";
+        cout << "|| 6. Sorting Lagu                 ||\n";
+        cout << "|| 7. Edit Lagu                    ||\n";
+        cout << "|| 8. Hapus Lagu                   ||\n";
+        cout << "|| 9. Kosongkan Playlist           ||\n";
+        cout << "|| 10. Keluar dan Simpan File      ||\n";
         cout << "=====================================\n";
         cout << "Pilihan: ";
         cin >> pil;
@@ -379,18 +382,21 @@ void menu() {
         switch (pil) {
             case 1: buatPlaylist(); break;
             case 2: cout << "Masukkan Nama Playlist: "; cin.getline(nama, 50); tambahLagu(nama); break;
-            case 3: cout << "Masukkan Nama Playlist: "; cin.getline(nama, 50); cariLagu(nama); break;
-            case 4: tampilkanLaguPilihan(); break;
-            case 5: laguFavorit(); break;
-            case 6: cout << "Masukkan Nama Playlist: "; cin.getline(nama, 50); editLagu(nama); break;
-            case 7: cout << "Masukkan Nama Playlist: "; cin.getline(nama, 50); hapusLagu(nama); break;
-            case 8: cout << "Masukkan Nama Playlist: "; cin.getline(nama, 50); kosongkanPlaylist(nama); break;
-            case 9: cout << "Masukkan Nama Playlist: "; cin.getline(nama, 50);
+            case 3: tampilkanLaguPilihan(); break;
+            case 4: laguFavorit(); break;
+            case 5: cout << "Masukkan Nama Playlist: "; cin.getline(nama, 50); cariLagu(nama); break;
+            case 6: cout << "Masukkan Nama Playlist: "; cin.getline(nama, 50);
                     char urut; cout << "Urutan (a/d): "; cin >> urut; cin.ignore();
                     sortingLagu(nama, urut == 'a'); break;
+            case 7: cout << "Masukkan Nama Playlist: "; cin.getline(nama, 50); editLagu(nama); break;
+            case 8: cout << "Masukkan Nama Playlist: "; cin.getline(nama, 50); hapusLagu(nama); break;
+            case 9: cout << "Masukkan Nama Playlist: "; cin.getline(nama, 50); kosongkanPlaylist(nama); break;
             case 10: simpanFile(); cout << "Terima Kasih! Program selesai.\n"; break;
             default: cout << "Pilihan tidak valid!\n";
         }
+
+        cout << endl << endl;
+        system("pause");
 
     } while (pil != 10);
 }
