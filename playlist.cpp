@@ -175,7 +175,7 @@ void tampilkanLaguPilihan() {
         char nama[50];
         cout << "Masukkan nama playlist: ";
         cin.getline(nama, 50);
-        tampilkanLagu(nama); // fungsi ini sekarang sudah ada
+        tampilkanLagu(nama);
     } else {
         cout << "Pilihan tidak valid!\n";
     }
@@ -306,7 +306,6 @@ void simpanFile() {
             lagu = lagu->next;
         }
 
-        // penanda akhir playlist
         Lagu penanda = { "#", "#", "#", false };
         fwrite(&penanda, sizeof(Lagu), 1, fp);
         pl = pl->next;
